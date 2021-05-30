@@ -6,7 +6,7 @@ const start = async () => {
     throw new Error("No Jwt secret");
   }
   if (!process.env.MONGO_URI) {
-    throw new Error("No Mongodb ui provided");
+    throw new Error("MONGO_URI must defined");
   }
   try {
     await mongoose.connect(process.env.MONGO_URI, {
@@ -19,7 +19,7 @@ const start = async () => {
     console.log(err);
   }
   app.listen(3000, () => {
-    console.log("Auth service running at 3000!");
+    console.log("Tickets service running at 3000!");
   });
 };
 

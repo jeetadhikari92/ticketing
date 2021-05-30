@@ -1,10 +1,10 @@
-import express from 'express';
-import { currentUser } from '../middlewares/current-user';
+import express from "express";
+import { currentUser } from "@jeetadhikari/ticketing-common";
 
 const router = express.Router();
 
-router.get('/api/users/currentuser', currentUser, (req, res) => { 
-  res.status(200).send({ currentUser: req.currentUser || null});
-})
+router.get("/api/users/currentuser", currentUser, (req, res) => {
+  res.status(200).send({ currentUser: req.currentUser || null });
+});
 
-export {router as currentUserRouter};
+export { router as currentUserRouter };
