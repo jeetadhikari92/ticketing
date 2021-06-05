@@ -1,6 +1,7 @@
 import request from "supertest";
 import mongoose from "mongoose";
 import { app } from "../../app";
+import { natsWrapper } from "../../nats-wrapper";
 
 it("return 404 if provided id does not exist", async () => {
   const id = new mongoose.Types.ObjectId().toHexString();
@@ -92,4 +93,23 @@ it("updated ticket if ticket id is valid, user logged in, and request body is va
     });
 
   expect(updateResponse.body.title).toEqual("abcdf");
+});
+
+it("publishes event when ticket is updated", async () => {
+  const cookie = global.signin();
+  const response = await request(app)
+    .post("/api/tickets")
+    .set("Cookie", cookie)
+    .send({
+      title: "abc",
+      price: 10,
+    });
+  await request(app)
+    .put(`/api/tickets/${response.body.id}`)
+    .set("Cookie", cookie)
+    .send({
+      title: "abcdf",
+      price: 100,
+    });
+  expect(natsWrapper.client.publish).toHaveBeenCalled();
 });
