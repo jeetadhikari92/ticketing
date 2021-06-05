@@ -7,9 +7,9 @@ import {
   currentUser,
 } from "@jeetadhikari/ticketing-common";
 import { indexOrdersRouter } from "./routes";
-import { showOrdersRouter } from "./routes/show";
+import { showOrderRouter } from "./routes/show";
 import { newOrdersRouter } from "./routes/new";
-import { deleteOrdersRouter } from "./routes/delete";
+import { deleteOrderRouter } from "./routes/delete";
 
 const app = express();
 app.set("trust proxy", true);
@@ -22,9 +22,9 @@ app.use(
 );
 app.use(currentUser);
 app.use(indexOrdersRouter);
-app.use(showOrdersRouter);
+app.use(showOrderRouter);
 app.use(newOrdersRouter);
-app.use(deleteOrdersRouter);
+app.use(deleteOrderRouter);
 
 app.all("*", async () => {
   throw new NotFoundErrors();
