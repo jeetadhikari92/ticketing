@@ -5,6 +5,7 @@ import {
   validateRequest,
   requireAuth,
   NotAuthorizedError,
+  BadRequestErrors,
 } from "@jeetadhikari/ticketing-common";
 import { Ticket } from "../models/ticket";
 import { TicketUpdatedPublisher } from "../events/publishers/ticket-updated-publisher";
@@ -27,9 +28,13 @@ router.put(
     if (!ticket) {
       throw new NotFoundErrors();
     }
+    if (ticket.orderId) {
+      throw new BadRequestErrors('Ticket is currently reserved');
+    }
     if (ticket.userId !== req.currentUser!.id) {
       throw new NotAuthorizedError();
     }
+
     ticket.set({
       title: req.body.title,
       price: req.body.price,
@@ -39,7 +44,8 @@ router.put(
       id: ticket.id,
       title: ticket.title,
       price: ticket.price,
-      userId: ticket.userId
+      userId: ticket.userId,
+      version: ticket.version
     })
     res.send(ticket);
   }
