@@ -5,7 +5,6 @@ import { OrderCreatedListener } from "./events/listeners/order-created-listener"
 import { natsWrapper } from "./nats-wrapper";
 
 const start = async () => {
-  console.log('Starting..')
   if (!process.env.JWT_KEY) {
     throw new Error("No Jwt secret");
   }
@@ -47,7 +46,7 @@ const start = async () => {
     console.log(err);
   }
   app.listen(3000, () => {
-    console.log("Tickets service running at 3000!");
+    console.log("Tickets service is running at 3000!");
   });
 };
 

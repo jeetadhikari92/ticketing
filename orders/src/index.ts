@@ -50,7 +50,7 @@ const start = async () => {
     console.log(err);
   }
   app.listen(3000, () => {
-    console.log("Orders service running at 3000!");
+    console.log("Orders service is running at 3000!");
   });
 };
 
