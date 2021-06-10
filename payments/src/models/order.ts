@@ -1,6 +1,6 @@
-import { OrderStatus } from "@jeetadhikari/ticketing-common";
-import { updateIfCurrentPlugin } from "mongoose-update-if-current";
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
+import { updateIfCurrentPlugin } from 'mongoose-update-if-current';
+import { OrderStatus } from '@jeetadhikari/ticketing-common';
 
 interface OrderAttrs {
   id: string;
@@ -23,7 +23,7 @@ interface OrderModel extends mongoose.Model<OrderDoc> {
 
 const orderSchema = new mongoose.Schema(
   {
-    id: {
+    userId: {
       type: String,
       required: true,
     },
@@ -46,8 +46,9 @@ const orderSchema = new mongoose.Schema(
   }
 );
 
-orderSchema.set("versionKey", "version");
+orderSchema.set('versionKey', 'version');
 orderSchema.plugin(updateIfCurrentPlugin);
+
 orderSchema.statics.build = (attrs: OrderAttrs) => {
   return new Order({
     _id: attrs.id,
@@ -58,6 +59,6 @@ orderSchema.statics.build = (attrs: OrderAttrs) => {
   });
 };
 
-const Order = mongoose.model<OrderDoc, OrderModel>("Order", orderSchema);
+const Order = mongoose.model<OrderDoc, OrderModel>('Order', orderSchema);
 
 export { Order };

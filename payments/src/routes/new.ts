@@ -1,5 +1,5 @@
-import express, { Request, Response } from "express";
-import { body } from "express-validator";
+import express, { Request, Response } from 'express';
+import { body } from 'express-validator';
 import {
   requireAuth,
   validateRequest,
@@ -7,37 +7,40 @@ import {
   NotAuthorizedError,
   NotFoundErrors,
   OrderStatus,
-} from "@jeetadhikari/ticketing-common";
-import { stripe } from "../stripe";
-import { Order } from "../models/orders";
-import { Payment } from "../models/payment";
-import { PaymentCreatedPublisher } from "../events/publishers/payment-created-publisher";
-import { natsWrapper } from "../nats-wrapper";
+} from '@jeetadhikari/ticketing-common';
+import { stripe } from '../stripe';
+import { Order } from '../models/order';
+import { Payment } from '../models/payment';
+import { PaymentCreatedPublisher } from '../events/publishers/payment-created-publisher';
+import { natsWrapper } from '../nats-wrapper';
 
 const router = express.Router();
 
 router.post(
-  "/api/payments",
+  '/api/payments',
   requireAuth,
-  [body("token").not().isEmpty(), body("orderId").not().isEmpty()],
+  [body('token').not().isEmpty(), body('orderId').not().isEmpty()],
   validateRequest,
   async (req: Request, res: Response) => {
     const { token, orderId } = req.body;
+
     const order = await Order.findById(orderId);
+
     if (!order) {
       throw new NotFoundErrors();
     }
-    if (order.userId !== req.currentUser?.id) {
+    if (order.userId !== req.currentUser!.id) {
       throw new NotAuthorizedError();
     }
     if (order.status === OrderStatus.Cancelled) {
-      throw new BadRequestErrors("Order is cancelled");
+      throw new BadRequestErrors('Cannot pay for an cancelled order');
     }
 
     const charge = await stripe.charges.create({
+      currency: 'inr',
       amount: order.price * 100,
-      currency: "inr",
       source: token,
+      description: 'test description'
     });
     const payment = Payment.build({
       orderId,
@@ -49,6 +52,7 @@ router.post(
       orderId: payment.orderId,
       stripeId: payment.stripeId,
     });
+
     res.status(201).send({ id: payment.id });
   }
 );
