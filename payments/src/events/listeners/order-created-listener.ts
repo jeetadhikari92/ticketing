@@ -1,16 +1,13 @@
-import {
-  Listerner,
-  OrderCreatedEvent,
-  Subjects,
-} from "@jeetadhikari/ticketing-common";
-import { Message } from "node-nats-streaming";
-import { Order } from "../../models/orders";
-import { queueGroupName } from "./queueGroupName";
+import { Message } from 'node-nats-streaming';
+import { Listerner, OrderCreatedEvent, Subjects } from '@jeetadhikari/ticketing-common';
+import { queueGroupName } from './queue-group-name';
+import { Order } from '../../models/order';
 
 export class OrderCreatedListener extends Listerner<OrderCreatedEvent> {
-  readonly subject = Subjects.OrderCreated;
+  subject: Subjects.OrderCreated = Subjects.OrderCreated;
   queueGroupName = queueGroupName;
-  async onMessage(data: OrderCreatedEvent["data"], msg: Message) {
+
+  async onMessage(data: OrderCreatedEvent['data'], msg: Message) {
     const order = Order.build({
       id: data.id,
       price: data.ticket.price,
@@ -19,6 +16,7 @@ export class OrderCreatedListener extends Listerner<OrderCreatedEvent> {
       version: data.version,
     });
     await order.save();
+
     msg.ack();
   }
 }

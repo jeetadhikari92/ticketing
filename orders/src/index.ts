@@ -7,6 +7,7 @@ import { TicketUpdatedListener } from "./events/listeners/ticket-updated-listene
 import { natsWrapper } from "./nats-wrapper";
 
 const start = async () => {
+  console.log('Starting Orders service...')
   if (!process.env.JWT_KEY) {
     throw new Error("No Jwt secret");
   }
