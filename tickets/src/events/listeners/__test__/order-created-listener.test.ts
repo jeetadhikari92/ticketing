@@ -1,9 +1,9 @@
-import { Message } from 'node-nats-streaming';
-import mongoose from 'mongoose';
-import { OrderCreatedEvent, OrderStatus } from '@jeetadhikari/ticketing-common';
-import { OrderCreatedListener } from '../order-created-listener';
-import { natsWrapper } from '../../../nats-wrapper';
-import { Ticket } from '../../../models/ticket';
+import { Message } from "node-nats-streaming";
+import mongoose from "mongoose";
+import { OrderCreatedEvent, OrderStatus } from "@jeetadhikari/ticketing-common";
+import { OrderCreatedListener } from "../order-created-listener";
+import { natsWrapper } from "../../../nats-wrapper";
+import { Ticket } from "../../../models/ticket";
 
 const setup = async () => {
   // Create an instance of the listener
@@ -11,19 +11,19 @@ const setup = async () => {
 
   // Create and save a ticket
   const ticket = Ticket.build({
-    title: 'concert',
+    title: "concert",
     price: 99,
-    userId: 'asdf',
+    userId: "asdf",
   });
   await ticket.save();
 
   // Create the fake data event
-  const data: OrderCreatedEvent['data'] = {
+  const data: OrderCreatedEvent["data"] = {
     id: mongoose.Types.ObjectId().toHexString(),
     version: 0,
     status: OrderStatus.Created,
-    userId: 'alskdfj',
-    expiresAt: 'alskdjf',
+    userId: "alskdfj",
+    expiresAt: "alskdjf",
     ticket: {
       id: ticket.id,
       price: ticket.price,
@@ -38,7 +38,7 @@ const setup = async () => {
   return { listener, ticket, data, msg };
 };
 
-it('sets the userId of the ticket', async () => {
+it("sets the userId of the ticket", async () => {
   const { listener, ticket, data, msg } = await setup();
 
   await listener.onMessage(data, msg);
@@ -48,14 +48,14 @@ it('sets the userId of the ticket', async () => {
   expect(updatedTicket!.orderId).toEqual(data.id);
 });
 
-it('acks the message', async () => {
+it("acks the message", async () => {
   const { listener, ticket, data, msg } = await setup();
   await listener.onMessage(data, msg);
 
   expect(msg.ack).toHaveBeenCalled();
 });
 
-it('publishes a ticket updated event', async () => {
+it("publishes a ticket updated event", async () => {
   const { listener, ticket, data, msg } = await setup();
 
   await listener.onMessage(data, msg);

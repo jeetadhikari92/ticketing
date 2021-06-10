@@ -1,29 +1,32 @@
-import mongoose from 'mongoose';
-import { Message } from 'node-nats-streaming';
-import { OrderStatus, ExpirationCompletedEvent } from '@jeetadhikari/ticketing-common';
-import { ExpirationCompletedListener } from '../expiration-completed-listener';
-import { natsWrapper } from '../../../nats-wrapper';
-import { Order } from '../../../models/orders';
-import { Ticket } from '../../../models/ticket';
+import mongoose from "mongoose";
+import { Message } from "node-nats-streaming";
+import {
+  OrderStatus,
+  ExpirationCompletedEvent,
+} from "@jeetadhikari/ticketing-common";
+import { ExpirationCompletedListener } from "../expiration-completed-listener";
+import { natsWrapper } from "../../../nats-wrapper";
+import { Order } from "../../../models/orders";
+import { Ticket } from "../../../models/ticket";
 
 const setup = async () => {
   const listener = new ExpirationCompletedListener(natsWrapper.client);
 
   const ticket = Ticket.build({
     id: mongoose.Types.ObjectId().toHexString(),
-    title: 'concert',
+    title: "concert",
     price: 20,
   });
   await ticket.save();
   const order = Order.build({
     status: OrderStatus.Created,
-    userId: 'alskdfj',
+    userId: "alskdfj",
     expiresAt: new Date(),
     ticket,
   });
   await order.save();
 
-  const data: ExpirationCompletedEvent['data'] = {
+  const data: ExpirationCompletedEvent["data"] = {
     orderId: order.id,
   };
 
@@ -35,7 +38,7 @@ const setup = async () => {
   return { listener, order, ticket, data, msg };
 };
 
-it('updates the order status to cancelled', async () => {
+it("updates the order status to cancelled", async () => {
   const { listener, order, data, msg } = await setup();
 
   await listener.onMessage(data, msg);
@@ -44,7 +47,7 @@ it('updates the order status to cancelled', async () => {
   expect(updatedOrder!.status).toEqual(OrderStatus.Cancelled);
 });
 
-it('emit an OrderCancelled event', async () => {
+it("emit an OrderCancelled event", async () => {
   const { listener, order, data, msg } = await setup();
 
   await listener.onMessage(data, msg);
@@ -57,7 +60,7 @@ it('emit an OrderCancelled event', async () => {
   expect(eventData.id).toEqual(order.id);
 });
 
-it('ack the message', async () => {
+it("ack the message", async () => {
   const { listener, data, msg } = await setup();
 
   await listener.onMessage(data, msg);

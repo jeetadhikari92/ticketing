@@ -1,5 +1,9 @@
 import { Message } from "node-nats-streaming";
-import { Listerner, OrderCreatedEvent, Subjects } from "@jeetadhikari/ticketing-common";
+import {
+  Listerner,
+  OrderCreatedEvent,
+  Subjects,
+} from "@jeetadhikari/ticketing-common";
 import { queueGroupName } from "./queueGroupName";
 import { Ticket } from "../../models/ticket";
 import { TicketUpdatedPublisher } from "../publishers/ticket-updated-publisher";
@@ -7,10 +11,10 @@ import { TicketUpdatedPublisher } from "../publishers/ticket-updated-publisher";
 export class OrderCreatedListener extends Listerner<OrderCreatedEvent> {
   readonly subject = Subjects.OrderCreated;
   queueGroupName = queueGroupName;
-  async onMessage(data: OrderCreatedEvent['data'], msg: Message) {
+  async onMessage(data: OrderCreatedEvent["data"], msg: Message) {
     const ticket = await Ticket.findById(data.ticket.id);
     if (!ticket) {
-      throw new Error('Ticket not found');
+      throw new Error("Ticket not found");
     }
 
     ticket.set({ orderId: data.id });

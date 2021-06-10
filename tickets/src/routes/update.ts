@@ -29,7 +29,7 @@ router.put(
       throw new NotFoundErrors();
     }
     if (ticket.orderId) {
-      throw new BadRequestErrors('Ticket is currently reserved');
+      throw new BadRequestErrors("Ticket is currently reserved");
     }
     if (ticket.userId !== req.currentUser!.id) {
       throw new NotAuthorizedError();
@@ -45,8 +45,8 @@ router.put(
       title: ticket.title,
       price: ticket.price,
       userId: ticket.userId,
-      version: ticket.version
-    })
+      version: ticket.version,
+    });
     res.send(ticket);
   }
 );

@@ -1,17 +1,17 @@
-import express, { Request, Response } from 'express';
+import express, { Request, Response } from "express";
 import {
   requireAuth,
   NotFoundErrors,
   NotAuthorizedError,
-} from '@jeetadhikari/ticketing-common';
-import { Order, OrderStatus } from '../models/orders';
-import { OrderCancelledPublisher } from '../events/publishers/order-cancelled-publisher';
-import { natsWrapper } from '../nats-wrapper';
+} from "@jeetadhikari/ticketing-common";
+import { Order, OrderStatus } from "../models/orders";
+import { OrderCancelledPublisher } from "../events/publishers/order-cancelled-publisher";
+import { natsWrapper } from "../nats-wrapper";
 
 const router = express.Router();
 
 router.delete(
-  '/api/orders/:orderId',
+  "/api/orders/:orderId",
   requireAuth,
   async (req: Request, res: Response) => {
     const { orderId } = req.params;
@@ -30,9 +30,9 @@ router.delete(
       id: order.id,
       version: order.version,
       ticket: {
-        id: order.ticket.id
-      }
-    })
+        id: order.ticket.id,
+      },
+    });
 
     // publishing an event saying this was cancelled!
 
