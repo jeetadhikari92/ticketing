@@ -18,7 +18,7 @@ const start = async () => {
       process.env.NATS_URL
     );
     natsWrapper.client.on("close", () => {
-      console.log("NATS connection is closed");
+      console.log("NATS connection is closed.");
       process.exit();
     });
     process.on("SIGINT", () => natsWrapper.client.close());
