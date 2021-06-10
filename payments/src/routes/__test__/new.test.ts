@@ -80,7 +80,7 @@ it('returns a 201 with valid inputs', async () => {
     .expect(201);
 
   const stripeCharges = await stripe.charges.list({ limit: 50 });
-  const stripeCharge = stripeCharges.data.find((charge) => {
+  const stripeCharge = stripeCharges.data.find((charge: {amount: number}) => {
     return charge.amount === price * 100;
   });
 
