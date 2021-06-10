@@ -29,5 +29,5 @@ spec:
           - path: /?(.*)
             backend:
               serviceName: client-srv
-              servicePort: 3001
+              servicePort: 3000
               
