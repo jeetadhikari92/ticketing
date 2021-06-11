@@ -12,9 +12,9 @@ spec:
     http:
       paths:
         - path: /api/users/?(.*)
-            backend:
-              serviceName: auth-srv
-              servicePort: 3000
+          backend:
+            serviceName: auth-srv
+            servicePort: 3000
         - path: /api/tickets/?(.*)
           backend:
             serviceName: tickets-srv
